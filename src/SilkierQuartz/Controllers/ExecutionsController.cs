@@ -1,12 +1,7 @@
-﻿using Quartz;
-using SilkierQuartz.Helpers;
-using SilkierQuartz.Models;
-using Quartz.Plugins.RecentHistory;
-using Quartz.Impl.Matchers;
+﻿using SilkierQuartz.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Globalization;
 
 #region Target-Specific Directives
 #if ( NETSTANDARD || NETCOREAPP )
@@ -52,7 +47,7 @@ namespace SilkierQuartz.Controllers
             public string Id { get; set; }
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Interrupt([FromBody] InterruptArgs args)
         {
             if (!await Scheduler.Interrupt(args.Id))
@@ -60,5 +55,6 @@ namespace SilkierQuartz.Controllers
 
             return NoContent();
         }
+
     }
 }

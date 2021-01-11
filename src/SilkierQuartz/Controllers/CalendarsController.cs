@@ -32,7 +32,7 @@ namespace SilkierQuartz.Controllers
                 var cal = await Scheduler.GetCalendar(name);
                 list.Add(new CalendarListItem() { Name = name, Description = cal.Description, Type = cal.GetType() });
             }
-            
+
             return View(list);
         }
 
@@ -72,7 +72,7 @@ namespace SilkierQuartz.Controllers
                 list.RemoveAt(list.Count - 1);
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Save([FromBody] CalendarViewModel[] chain, bool isNew)
         {
             var result = new ValidationResult();
@@ -90,7 +90,7 @@ namespace SilkierQuartz.Controllers
                 errors.ForEach(x => x.SegmentIndex = i);
                 result.Errors.AddRange(errors);
             }
-            
+
             if (result.Success)
             {
                 string name = chain[0].Name;
@@ -116,7 +116,7 @@ namespace SilkierQuartz.Controllers
                     current = newCal;
                     existing = existing?.CalendarBase;
                 }
-                
+
                 if (root == null)
                 {
                     result.Errors.Add(new ValidationError() { Field = nameof(CalendarViewModel.Type), Reason = "Cannot create calendar.", SegmentIndex = 0 });
@@ -136,7 +136,7 @@ namespace SilkierQuartz.Controllers
         }
 
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Delete([FromBody] DeleteArgs args)
         {
             if (!await Scheduler.DeleteCalendar(args.Name))
@@ -144,6 +144,5 @@ namespace SilkierQuartz.Controllers
 
             return NoContent();
         }
-
     }
 }

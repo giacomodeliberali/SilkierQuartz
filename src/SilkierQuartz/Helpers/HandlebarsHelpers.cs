@@ -72,7 +72,7 @@ namespace SilkierQuartz.Helpers
         {
             get
             {
-                string url = _services.Options.VirtualPathRoot;
+                string url = "/framework" + _services.Options.VirtualPathRoot;
                 if (!url.EndsWith("/"))
                     url += "/";
                 return url;

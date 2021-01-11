@@ -141,12 +141,12 @@ namespace SilkierQuartz.Controllers
             return View("Edit", new TriggerViewModel() { Trigger = model, DataMap = jobDataMap });
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Save([FromForm] TriggerViewModel model)
         {
             var triggerModel = model.Trigger;
             var jobDataMap = (await Request.GetJobDataMapForm()).GetModel(Services);
-            
+
             var result = new ValidationResult();
 
             model.Validate(result.Errors);
@@ -191,7 +191,7 @@ namespace SilkierQuartz.Controllers
             return Json(result);
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Delete([FromBody] KeyModel model)
         {
             if (!EnsureValidKey(model)) return BadRequest();
@@ -204,7 +204,7 @@ namespace SilkierQuartz.Controllers
             return NoContent();
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Resume([FromBody] KeyModel model)
         {
             if (!EnsureValidKey(model)) return BadRequest();
@@ -212,7 +212,7 @@ namespace SilkierQuartz.Controllers
             return NoContent();
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Pause([FromBody] KeyModel model)
         {
             if (!EnsureValidKey(model)) return BadRequest();
@@ -220,7 +220,7 @@ namespace SilkierQuartz.Controllers
             return NoContent();
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> PauseJob([FromBody] KeyModel model)
         {
             if (!EnsureValidKey(model)) return BadRequest();
@@ -228,7 +228,7 @@ namespace SilkierQuartz.Controllers
             return NoContent();
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> ResumeJob([FromBody] KeyModel model)
         {
             if (!EnsureValidKey(model)) return BadRequest();
@@ -236,7 +236,7 @@ namespace SilkierQuartz.Controllers
             return NoContent();
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public IActionResult Cron()
         {
             var cron = Request.ReadAsString()?.Trim();
@@ -283,7 +283,7 @@ namespace SilkierQuartz.Controllers
             return trigger;
         }
 
-        [HttpGet, JsonErrorResponse]
+        [HttpGet, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> AdditionalData()
         {
             var keys = await Scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.AnyGroup());
@@ -293,7 +293,7 @@ namespace SilkierQuartz.Controllers
             var list = new List<object>();
             foreach (var key in keys)
             {
-                list.Add(new 
+                list.Add(new
                 {
                     TriggerName = key.Name,
                     TriggerGroup = key.Group,
@@ -304,7 +304,7 @@ namespace SilkierQuartz.Controllers
             return View(list);
         }
 
-        
+
         [HttpGet]
         public Task<IActionResult> Duplicate(string name, string group)
         {
@@ -313,7 +313,6 @@ namespace SilkierQuartz.Controllers
 
         bool EnsureValidKey(string name, string group) => !(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(group));
         bool EnsureValidKey(KeyModel model) => EnsureValidKey(model.Name, model.Group);
-
     }
 
 }

@@ -1,33 +1,31 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Antiforgery;
+using Quartz;
+using SilkierQuartz.Models;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using SilkierQuartz.Models;
-using SilkierQuartz.Helpers;
-using Quartz;
 
 namespace SilkierQuartz.Controllers
 {
-	#region Target-Specific Directives
+    #region Target-Specific Directives
 
-#if ( NETSTANDARD || NETCOREAPP )
+#if (NETSTANDARD || NETCOREAPP)
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Primitives;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
-	public abstract partial class PageControllerBase : Microsoft.AspNetCore.Mvc.ControllerBase
+    public abstract partial class PageControllerBase : Microsoft.AspNetCore.Mvc.ControllerBase
     {
         private static readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings()
         {
             ContractResolver = new DefaultContractResolver(), // PascalCase as default
         };
 
-        protected Services Services => (Services) Request.HttpContext.Items[typeof(Services)];
+        protected Services Services => (Services)Request.HttpContext.Items[typeof(Services)];
         protected string GetRouteData(string key) => RouteData.Values[key].ToString();
-        protected IActionResult Json( object content ) => new JsonResult( content, _serializerSettings );
+        protected IActionResult Json(object content) => new JsonResult(content, _serializerSettings);
 
 
         protected IActionResult NotModified() => new StatusCodeResult(304);
@@ -85,13 +83,15 @@ namespace SilkierQuartz.Controllers
 
     }
 #endif
-#endregion
+    #endregion
 
-	public abstract partial class PageControllerBase
+    public abstract partial class PageControllerBase
     {
         protected IScheduler Scheduler => Services.Scheduler;
 
         protected dynamic ViewBag { get; } = new ExpandoObject();
+
+        public IAntiforgery Antiforgery { get; set; }
 
         internal class Page
         {

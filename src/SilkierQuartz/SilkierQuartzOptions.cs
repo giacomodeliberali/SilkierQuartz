@@ -15,7 +15,7 @@ namespace SilkierQuartz
         /// src='data:image/jpeg;base64, LzlqLzRBQ...[end of base64 data]'
         /// Defaults to the SilkierQuartz original logo
         /// </summary>
-        public string Logo { get; set; } = "Content/Images/logo.png";
+        public string Logo { get; set; } = "/framework/quartz/Content/Images/logo.png";
 
         public string ProductName { get; set; } = "";
 

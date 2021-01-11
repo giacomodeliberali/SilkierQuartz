@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Globalization;
+using Microsoft.AspNetCore.Antiforgery;
 
 #region Target-Specific Directives
 #if ( NETSTANDARD || NETCOREAPP )
@@ -29,7 +30,7 @@ namespace SilkierQuartz.Controllers
             var histStore = Scheduler.Context.GetExecutionHistoryStore();
             var metadata = await Scheduler.GetMetaData();
             IReadOnlyCollection<JobKey> jobKeys = null;
-            IReadOnlyCollection<TriggerKey> triggerKeys = null; 
+            IReadOnlyCollection<TriggerKey> triggerKeys = null;
             if (!Scheduler.IsShutdown)
             {
                 try
@@ -60,7 +61,7 @@ namespace SilkierQuartz.Controllers
 
             int? failedJobs = null;
             int executedJobs = metadata.NumberOfJobsExecuted;
-            
+
             if (histStore != null)
             {
                 execHistory = await histStore?.FilterLast(10);
@@ -80,14 +81,14 @@ namespace SilkierQuartz.Controllers
                 UtcLabel = DateTimeSettings.UseLocalTime ? string.Empty : "UTC",
                 Environment.MachineName,
                 Application = Environment.CommandLine,
-                JobsCount = jobKeys?.Count??0,
-                TriggerCount = triggerKeys?.Count??0,
+                JobsCount = jobKeys?.Count ?? 0,
+                TriggerCount = triggerKeys?.Count ?? 0,
                 ExecutingJobs = currentlyExecutingJobs.Count,
                 ExecutedJobs = executedJobs,
                 FailedJobs = failedJobs?.ToString(CultureInfo.InvariantCulture) ?? "N / A",
                 JobGroups = pausedJobGroups,
                 TriggerGroups = pausedTriggerGroups,
-                HistoryEnabled = histStore != null,
+                HistoryEnabled = histStore != null
             });
         }
 
@@ -108,7 +109,7 @@ namespace SilkierQuartz.Controllers
             public string Groups { get; set; } // trigger-groups | job-groups
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task Action([FromBody] ActionArgs args)
         {
             switch (args.Action.ToLower())
@@ -156,6 +157,5 @@ namespace SilkierQuartz.Controllers
                     throw new InvalidOperationException("Invalid action: " + args.Action);
             }
         }
-
     }
 }

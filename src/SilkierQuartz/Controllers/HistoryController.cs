@@ -77,6 +77,5 @@ namespace SilkierQuartz.Controllers
 
             return View(list);
         }
-
     }
 }

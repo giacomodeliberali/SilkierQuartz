@@ -1,4 +1,50 @@
 
+```csharp
+// Startup.cs configureServices
+
+IocManager.Instance.IocContainer.Register(
+    Classes.FromAssemblyContaining<SilkierQuartzOptions>()
+    .IncludeNonPublicTypes()
+    .BasedOn<PageControllerBase>()
+    .LifestyleTransient());
+
+
+app.UseAbp(options =>
+{
+    options.UseAbpRequestLocalization = false; //used below: UseAbpRequestLocalization
+});
+
+var quartzOptions = new NameValueCollection
+{
+    { StdSchedulerFactory.PropertySchedulerInstanceId, StdSchedulerFactory.AutoGenerateInstanceId },
+    { StdSchedulerFactory.PropertySchedulerInstanceName, "Framework Scheduler" },
+    // { StdSchedulerFactory.PropertySchedulerTypeLoadHelperType, typeof(QuartzJobClassLoader).AssemblyQualifiedNameWithoutVersion() },
+    { StdSchedulerFactory.PropertySchedulerTypeLoadHelperType, "Uno.Framework.Web.QuartzJobClassLoader, Uno.Framework.Web.Host" },
+    { "quartz.serializer.type", "json" },
+    { StdSchedulerFactory.PropertyJobStoreType, "Quartz.Impl.AdoJobStore.JobStoreTX" },
+    { "quartz.jobStore.driverDelegateType", "Quartz.Impl.AdoJobStore.SqlServerDelegate" },
+    { "quartz.jobStore.useProperties", "true" },
+    {"quartz.jobStore.misfireThreshold", "60000" },
+    {"quartz.jobStore.dataSource", "UnoInsDataSource" },
+    {"quartz.jobStore.clustered", "true" },
+    {"quartz.dataSource.UnoInsDataSource.provider", "SqlServer" },
+    {"quartz.dataSource.UnoInsDataSource.connectionString", "Server=" }
+};
+var factory = new StdSchedulerFactory(quartzOptions);
+var options = new SilkierQuartzOptions()
+{
+    Scheduler = factory.GetScheduler().Result,
+    VirtualPathRoot = "/quartz",
+    DefaultDateFormat = "yyyy-MM-dd",
+    DefaultTimeFormat = "HH:mm:ss"
+};
+app.Use(async (context, next) =>
+{
+    context.Items[typeof(Services)] = Services.Create(options);
+    await next();
+});
+```
+
 
 [![NuGet](https://img.shields.io/nuget/v/SilkierQuartz.svg)](https://www.nuget.org/packages/SilkierQuartz)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

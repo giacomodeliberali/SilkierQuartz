@@ -84,7 +84,7 @@ namespace SilkierQuartz.Controllers
             return View(jobDataMap);
         }
 
-        [HttpPost, ActionName("Trigger"), JsonErrorResponse]
+        [HttpPost, ActionName("Trigger"), JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> PostTrigger(string name, string group)
         {
             if (!EnsureValidKey(name, group)) return BadRequest();
@@ -142,9 +142,9 @@ namespace SilkierQuartz.Controllers
                 throw new InvalidOperationException("Job " + key + " not found.");
 
             return job;
-        } 
+        }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Save([FromForm] JobViewModel model, bool trigger)
         {
             var jobModel = model.Job;
@@ -187,7 +187,7 @@ namespace SilkierQuartz.Controllers
             return Json(result);
         }
 
-        [HttpPost, JsonErrorResponse]
+        [HttpPost, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> Delete([FromBody] KeyModel model)
         {
             if (!EnsureValidKey(model)) return BadRequest();
@@ -200,7 +200,7 @@ namespace SilkierQuartz.Controllers
             return NoContent();
         }
 
-        [HttpGet, JsonErrorResponse]
+        [HttpGet, JsonErrorResponse, IgnoreAntiforgeryToken]
         public async Task<IActionResult> AdditionalData()
         {
             var keys = await Scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup());
@@ -216,7 +216,8 @@ namespace SilkierQuartz.Controllers
 
                 list.Add(new
                 {
-                    JobName = key.Name, key.Group,
+                    JobName = key.Name,
+                    key.Group,
                     History = historyByJob.TryGet(key.ToString()).ToHistogram(),
                     NextFireTime = nextFires.Where(x => x != null).OrderBy(x => x).FirstOrDefault()?.ToDefaultFormat(),
                 });
@@ -233,6 +234,5 @@ namespace SilkierQuartz.Controllers
 
         bool EnsureValidKey(string name, string group) => !(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(group));
         bool EnsureValidKey(KeyModel model) => EnsureValidKey(model.Name, model.Group);
-
     }
 }
