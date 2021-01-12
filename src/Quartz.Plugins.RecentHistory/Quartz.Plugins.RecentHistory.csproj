@@ -7,11 +7,11 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
 
-    <Version>1.0.3</Version>
+    <Version>1.0.0</Version>
     <Product>SilkierQuartz</Product>
     <Title>Quartz.NET plugin to persist recent job execution history</Title>
     <Authors>Jan Lucansky,Maikebing</Authors>
-    <PackageProjectUrl>https://github.com/jlucansky/SilkierQuartz</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/giacomodeliberali/SilkierQuartz</PackageProjectUrl>
     <Description>This is supporting package for SilkierQuartz</Description>
     <PackageTags>quartz;recent;history</PackageTags>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -20,7 +20,7 @@
     <Copyright>Copyright © 2018 Jan Lucansky, Copyright © 2020  Maikebing</Copyright>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/jlucansky/SilkierQuartz</RepositoryUrl>
-    <PackageId>SilkierQuartz.Plugins.RecentHistory</PackageId>
+    <PackageId>Test.SilkierQuartz.Plugins.RecentHistory</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
