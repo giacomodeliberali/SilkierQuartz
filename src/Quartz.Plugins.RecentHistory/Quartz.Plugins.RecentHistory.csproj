@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
 
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Product>SilkierQuartz</Product>
     <Title>Quartz.NET plugin to persist recent job execution history</Title>
     <Authors>Jan Lucansky,Maikebing</Authors>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Quartz" Version="3.2.3" />
+    <PackageReference Include="Quartz" Version="3.0.7" />
   </ItemGroup>
 
   <ItemGroup>
